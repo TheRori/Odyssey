@@ -13,14 +13,14 @@ const routes = [
     component: Index,
   },
   {
-  path: '/ping',
-  name: 'Ping',
-  component: Ping,
+    path: '/ping',
+    name: 'Ping',
+    component: Ping,
   },
   {
-  path: '/view_img',
-  name: 'View_Img',
-  component: ViewImg,
+    path: '/view_img',
+    name: 'View_Img',
+    component: ViewImg,
   },
 ];
 

@@ -4,6 +4,6 @@
 
 <script>
 export default {
-name: "view_img"
-}
+  name: 'view_img',
+};
 </script>
