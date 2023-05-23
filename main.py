@@ -5,7 +5,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 
-import tagtog2df
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 from tagtog2df.tagtog2df import allfiles_onedataframe
@@ -65,18 +64,18 @@ def add_emotions_pyfeel(df):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    # df = make_df()
-    # add_emotions_senticnet(df)
-    # add_emotions_pyfeel(df)
-    # df.to_csv('csv/emotions_df.csv')
-    df = pd.read_csv('csv/emotions_df.csv')
-    df['TagTog'].value_counts().plot(kind='bar')
-    plt.show()
-    df['Senticnet'].value_counts().plot(kind='bar')
-    plt.show()
-    df['PyFeel'].value_counts().plot(kind='bar')
-    plt.show()
-    print(df.TagTog.unique())
-    print(df.Senticnet.unique())
-    print(df.PyFeel.unique())
+    df = make_df()
+    add_emotions_senticnet(df)
+    add_emotions_pyfeel(df)
+    df.to_csv('csv/emotions_df.csv')
+    # df = pd.read_csv('csv/emotions_df.csv')
+    # df['TagTog'].value_counts().plot(kind='bar')
+    # plt.show()
+    # df['Senticnet'].value_counts().plot(kind='bar')
+    # plt.show()
+    # df['PyFeel'].value_counts().plot(kind='bar')
+    # plt.show()
+    # print(df.TagTog.unique())
+    # print(df.Senticnet.unique())
+    # print(df.PyFeel.unique())
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
