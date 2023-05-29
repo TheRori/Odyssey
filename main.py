@@ -90,24 +90,48 @@ def add_emotions_pyfeel(df):
         emotions.append(max_em)
     df['PyFeel'] = emotions
 
-def make_diagram(df,em1,em2,em3):
-    inter1 = df[(df['TagTog'] == em1) & (df['PyFeel'] == em2)]
-    inter2 = df[(df['Senticnet'] == em3) & (df['PyFeel'] == em2)]
-    inter3 = df[(df['Senticnet'] == em3) & (df['TagTog'] == em1)]
-    inter4 = df[(df['Senticnet'] == em3) & (df['TagTog'] == em1) & (df['PyFeel'] == em2)]
+def textsPerEmotions(m, em):
+    return len(df[df[m] == em])
 
-    mask2 = df[df['TagTog'] == em1]
-    mask3 = df[df['PyFeel'] == em2]
-    mask4 = df[df['Senticnet'] == em3]
+def make_diagram(df,em):
+    inter1 = df[(df['TagTog'] == em) & (df['PyFeel'] == em)]
+    inter2 = df[(df['Senticnet'] == em) & (df['PyFeel'] == em)]
+    inter3 = df[(df['Senticnet'] == em) & (df['TagTog'] == em)]
+    inter4 = df[(df['Senticnet'] == em) & (df['TagTog'] == em) & (df['PyFeel'] == em)]
 
-    df_similarity = pd.DataFrame(np.array([[em1,(len(mask2)),(len(mask3)),(len(mask4)),(len(inter1)),(len(inter3)),(len(inter2)),(len(inter4))]]),
+    n1 = textsPerEmotions('TagTog',em)
+    n2 = textsPerEmotions('PyFeel',em)
+    n3 = textsPerEmotions('Senticnet',em)
+
+    df_similarity = pd.DataFrame(np.array([[em,n1,n2,n3,(len(inter1)),(len(inter3)),(len(inter2)),(len(inter4))]]),
                  columns=['Emotion','TagTog', 'PyFeel', 'Senticnet','T-P','T-S','P-S','T-P-S'])
 
-    venn3(subsets=(len(mask2),len(mask3), len(mask4), len(inter1), len(inter2), len(inter3), len(inter4)),
+    venn3(subsets=(n1, n2, n3, len(inter1), len(inter2), len(inter3), len(inter4)),
           set_labels=('TagTog', 'PyFeel', 'Senticnet'))
-    plt.title(em1)
+    plt.title(em)
     plt.show()
     return df_similarity
+
+def normalizeEmSenticnet(df):
+    df = df.apply(lambda x: x.astype(str).str.lower())
+    df = df.replace('ecstasy','joy')
+    df = df.replace('contentment','joy')
+    df = df.replace('anxiety','fear')
+    df = df.replace('terror','fear')
+    df = df.replace('dislike','disgust')
+    df = df.replace('loathing','disgust')
+    df = df.replace('bliss','calmness')
+    df = df.replace('serenity','calmness')
+    df = df.replace('grief','sadness')
+    df = df.replace('melancholy','sadness')
+    df = df.replace('anger','angry')
+    df = df.replace('annoyance','angry')
+    df = df.replace('rage','angry')
+    df = df.replace('acceptance','pleasantness')
+    df = df.replace('delight','pleasantness')
+    df = df.replace('enthusiasm','eagerness')
+    df = df.replace('responsiveness','eagerness')
+    return df
 
 
 if __name__ == '__main__':
@@ -120,14 +144,24 @@ if __name__ == '__main__':
     #add_emotions_pyfeel(df)
     #df.to_csv('csv/emotions_df.csv')
     df = pd.read_csv('csv/emotions_df.csv')
-    df2 = make_diagram(df,'Fear','fear','grief')
-    df3 = make_diagram(df,'Calmness','calmness','grief')
-    df4 = make_diagram(df,'Joy','joy','serenity')
-    dfc= pd.concat([df2, df3], axis=0)
-    dfc= pd.concat([dfc, df4], axis=0)
-
-
-    print(dfc.head())
+    df = normalizeEmSenticnet(df)
+    emotions = (list(df.Senticnet.unique()))
+    emotions.extend(list(df.TagTog.unique()))
+    emotions.extend(list(df.PyFeel.unique()))
+    emotions = list(dict.fromkeys(emotions))
+    df2 = pd.DataFrame(
+                 columns=['Emotion','TagTog', 'PyFeel', 'Senticnet','T-P','T-S','P-S','T-P-S'])
+    for e in emotions:
+        df1 = make_diagram(df,e)
+        df2 = pd.concat([df2, df1], axis=0)
+    df2 = df2.reset_index(drop=True)
+    df2.to_csv('csv/stats_emotions.csv')
+    # df3 = make_diagram(df,'Calmness','calmness','grief')
+    # df4 = make_diagram(df,'Joy','joy','serenity')
+    # dfc= pd.concat([df2, df3], axis=0)
+    # dfc= pd.concat([dfc, df4], axis=0)
+    #
+    # print(dfc.head())
     #df['TagTog'].value_counts().plot(kind='bar')
     #plt.show()
     #df['Senticnet'].value_counts().plot(kind='bar')
