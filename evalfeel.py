@@ -49,6 +49,7 @@ class EvalFeel:
         """
         df_clean = self.df[['Class ID', 'Text']]
         df_clean = df_clean.rename(columns={"Class ID": "TagTog"})
+        df_clean = df_clean[['Text','TagTog']]
         # Remove the rows who contains non desired tags
         df_clean = df_clean.loc[(df_clean["TagTog"] != 'e_14') & (df_clean["TagTog"] != 'e_25') &
                                 (df_clean["TagTog"] != 'e_1') & (df_clean["TagTog"] != 'e_2') &
@@ -148,8 +149,8 @@ class EvalFeel:
         self.df = self.df.replace('grief', 'sadness')
         self.df = self.df.replace('melancholy', 'sadness')
         self.df = self.df.replace('annoyance', 'anger')
-        self.df = self.df.replace('angry', 'anger')
         self.df = self.df.replace('rage', 'angry')
+        self.df = self.df.replace('angry', 'anger')
         self.df = self.df.replace('acceptance', 'pleasantness')
         self.df = self.df.replace('delight', 'pleasantness')
         self.df = self.df.replace('pleasantness', 'surprise')
@@ -183,12 +184,12 @@ class EvalFeel:
         plt.show()
         return df_similarity
 
-    def make_all_stats(self):
+    def make_all_stats(self,path):
         """
-        Make the dataframes and the Venn diagrams for each emotion present in the base dataframe
+        Make the dataframes and the Venn diagrams for each emotion present in the base dataframe from a given csv who
+        a dataframe with the 3 methods and the texts are stored
         """
-        self.add_emotions_senticnet()
-        self.add_emotions_pyfeel()
+        self.df = pd.read_csv(path)
         self.normalizeEmSenticnet()
         # Make an emotions list with all the emotions present in the base dataframe
         emotions = (list(self.df.Senticnet.unique()))
