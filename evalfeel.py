@@ -147,11 +147,12 @@ class EvalFeel:
         self.df = self.df.replace('serenity', 'calmness')
         self.df = self.df.replace('grief', 'sadness')
         self.df = self.df.replace('melancholy', 'sadness')
-        self.df = self.df.replace('anger', 'angry')
-        self.df = self.df.replace('annoyance', 'angry')
+        self.df = self.df.replace('annoyance', 'anger')
+        self.df = self.df.replace('angry', 'anger')
         self.df = self.df.replace('rage', 'angry')
         self.df = self.df.replace('acceptance', 'pleasantness')
         self.df = self.df.replace('delight', 'pleasantness')
+        self.df = self.df.replace('pleasantness', 'surprise')
         self.df = self.df.replace('enthusiasm', 'eagerness')
         self.df = self.df.replace('responsiveness', 'eagerness')
 
@@ -175,7 +176,7 @@ class EvalFeel:
             np.array([[em, n1, n2, n3, (len(inter1)), (len(inter3)), (len(inter2)), (len(inter4))]]),
             columns=['Emotion', 'TagTog', 'PyFeel', 'Senticnet', 'T-P', 'T-S', 'P-S', 'T-P-S'])
         # Creation of the Venn diagram
-        venn3(subsets=(n1, n2, n3, len(inter1), len(inter2), len(inter3), len(inter4)),
+        venn3(subsets=(n1, n2,len(inter1), n3, len(inter3), len(inter2), len(inter4)),
               set_labels=('TagTog', 'PyFeel', 'Senticnet'))
         plt.title(em)
         plt.savefig('png/'+em+'.png')
